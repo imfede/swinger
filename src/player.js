@@ -31,7 +31,7 @@ export default class Player {
         this.group.add(new Mesh(geometry, material_wireframe));
         this.group.position.set(x, y, player_d / 2);
 
-        this.camera = new PerspectiveCamera(75, width / height, 0.1, 1000);
+        this.camera = new PerspectiveCamera(90, width / height, 0.1, 1000);
         this.camera.position.z = 0.5;
         this.camera.position.x = -2.5;
         this.camera.rotateZ(-Math.PI / 2);
