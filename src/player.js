@@ -1,4 +1,4 @@
-import { BoxGeometry, MeshBasicMaterial, Mesh, Group, PerspectiveCamera, Vector3 } from 'three';
+import { BoxGeometry, MeshBasicMaterial, Mesh, Group, PerspectiveCamera, Vector3, Quaternion } from 'three';
 import KeyCode from 'keycode-js';
 import addKeyMapping from './keys';
 import { width, height } from './conf';
@@ -20,6 +20,14 @@ const acc_jump = new Vector3(0, 0, 0.2);
 const vel_min = new Vector3(-1, -1, -10);
 const vel_max = new Vector3(1, 1, 10);
 
+const zrot = new Quaternion().setFromAxisAngle(new Vector3(0, 0, 1), -Math.PI / 2);
+const X = new Vector3(1, 0, 0);
+
+function cameraAngle(height) {
+    const h = height > 50 ? 50 : height;
+    return ((- 1 / 150 * h) + (2 / 3)) * Math.PI;
+}
+
 export default class Player {
     constructor({ x, y }) {
         const geometry = new BoxGeometry(player_w, player_h, player_d);
@@ -34,15 +42,7 @@ export default class Player {
         this.camera = new PerspectiveCamera(90, width / height, 0.1, 1000);
         this.camera.position.z = 0.5;
         this.camera.position.x = -2.5;
-        this.camera.rotateZ(-Math.PI / 2);
-        this.camera.rotateX(Math.PI / 3);
         this.group.add(this.camera);
-        addKeyMapping(KeyCode.KEY_UP, () => this.camera.rotateX(Math.PI / 32));
-        addKeyMapping(KeyCode.KEY_DOWN, () => this.camera.rotateX(-Math.PI / 32));
-        addKeyMapping(187, () => this.camera.position.x += 0.5);
-        addKeyMapping(189, () => this.camera.position.x -= 0.5);
-        addKeyMapping(KeyCode.KEY_OPEN_BRACKET, () => this.camera.position.z += 0.5);
-        addKeyMapping(KeyCode.KEY_CLOSE_BRACKET, () => this.camera.position.z -= 0.5);
 
         this.acc = acc_base.clone();
         this.vel = new Vector3();
@@ -75,6 +75,10 @@ export default class Player {
             this.vel.add(this.acc);
             this.vel.clamp(vel_min, vel_max);
             this.acc.copy(acc_base);
+
+            // camera
+            const xrot = new Quaternion().setFromAxisAngle(X, cameraAngle(this.group.position.z));
+            this.camera.setRotationFromQuaternion(zrot.clone().multiply(xrot));
         });
     }
 
