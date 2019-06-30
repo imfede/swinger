@@ -2,7 +2,8 @@ import { Scene, WebGLRenderer } from 'three';
 import { createWorld } from './building';
 import { height, width } from './conf';
 import { addHook, start } from './loop';
-import { createPlayer } from './player';
+import Player, { createPlayer } from './player';
+import {hook, createTarget, createLine} from './swinger';
 
 const scene = new Scene();
 const renderer = new WebGLRenderer();
@@ -13,9 +14,17 @@ document.body.appendChild(renderer.domElement);
 const world = createWorld();
 scene.add(world);
 
-const {camera, player} = createPlayer({x: -10, y: 0});
-scene.add(player);
+const player = new Player({x: 0, y: 0});
+scene.add(player.getGroup());
 
-addHook(() => renderer.render(scene, camera));
+const target = createTarget();
+scene.add(target);
+
+const line = createLine();
+scene.add(line);
+
+hook(world, player, target, line);
+
+addHook(() => renderer.render(scene, player.getCamera()));
 
 start();

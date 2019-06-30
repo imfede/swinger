@@ -7,8 +7,15 @@ export function createBuilding({ x, y }, { w, h, d }) {
     const material_wireframe = new MeshBasicMaterial({ color: 0x0, wireframe: true });
 
     const group = new Group();
-    group.add(new Mesh(geometry, material));
-    group.add(new Mesh(geometry, material_wireframe));
+    
+    const mesh = new Mesh(geometry, material);
+    mesh.name = "solid";
+
+    const wireframe = new Mesh(geometry, material_wireframe);
+    wireframe.name = "wireframe";
+
+    group.add(mesh);
+    group.add(wireframe);
     group.position.set(x, y, d / 2);
 
     return group;

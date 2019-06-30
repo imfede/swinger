@@ -20,4 +20,11 @@ export function stop() {
 
 export function addHook(fn) {
     hooks.push(fn);
+    return function() {
+        for(let i=0; i<hooks.length; i++) {
+            if(hooks[i] === fn) {
+                hooks.splice(i, 1);
+            }
+        }
+    }
 }
