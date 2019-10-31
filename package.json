@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "keycode-js": "^1.0.4",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.13",
     "three": "^0.106.2"
   }
 }
